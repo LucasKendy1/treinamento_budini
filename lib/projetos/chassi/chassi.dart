@@ -1,18 +1,15 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:treinamento/components/button_switch.dart';
 import 'package:treinamento/components/clockwise_button.dart';
-import 'package:treinamento/components/custom_button.dart';
 import 'package:treinamento/components/default_button.dart';
 import 'package:treinamento/components/fonte_padrao.dart';
 import 'package:treinamento/components/header.dart';
 import 'package:treinamento/components/number_dot.dart';
 import 'package:treinamento/components/switch.dart';
-import 'package:treinamento/projetos/chassi/controller.dart';
 
 class Chassi extends StatefulWidget {
   const Chassi({super.key});
@@ -281,7 +278,8 @@ class _ChassiState extends State<Chassi> {
       splitScreenMode: true,
       child: SafeArea(
         child: Container(
-          height: double.infinity,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
               gradient: LinearGradient(
             colors: [
@@ -331,13 +329,11 @@ class _ChassiState extends State<Chassi> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            child: FontePadrao(
-                              text:
-                                  "To determine an inspection standard, select the starting position and rotation on the model vehicle.",
-                              tamanho: 13,
-                              txtalg: TextAlign.center,
-                            ),
+                          FontePadrao(
+                            text:
+                                "To determine an inspection standard, select the starting position and rotation on the model vehicle.",
+                            tamanho: 13,
+                            txtalg: TextAlign.center,
                           ),
 
                           Container(
@@ -453,7 +449,7 @@ class _ChassiState extends State<Chassi> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: Container(
+                child: SizedBox(
                   // color: Colors.blue,
                   width: 100.w,
                   child: Center(
@@ -466,7 +462,7 @@ class _ChassiState extends State<Chassi> {
                 ),
               ),
               Expanded(
-                child: Container(
+                child: SizedBox(
                   // color: Colors.amberAccent,
                   width: 150.w,
                   child: Stack(
@@ -478,13 +474,11 @@ class _ChassiState extends State<Chassi> {
                         children: [
                           Expanded(
                             flex: 2,
-                            child: Container(
-                                // color: Colors.brown,
-                                child: NumberDot(
+                            child: NumberDot(
                               active: frontLeft,
                               number: frontLeftValue,
                               onTap: apertouFrontLeft,
-                            )),
+                            ),
                           ),
                           Expanded(
                               flex: 9,
@@ -493,13 +487,10 @@ class _ChassiState extends State<Chassi> {
                                   )),
                           Expanded(
                               flex: 2,
-                              child: Container(
-                                // color: Colors.brown,
-                                child: NumberDot(
-                                  active: frontRight,
-                                  number: frontRightValue,
-                                  onTap: apertouFrontRight,
-                                ),
+                              child: NumberDot(
+                                active: frontRight,
+                                number: frontRightValue,
+                                onTap: apertouFrontRight,
                               )),
                         ],
                       ),
@@ -512,7 +503,7 @@ class _ChassiState extends State<Chassi> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
+                    SizedBox(
                       // color: Colors.deepOrange,
                       width: 100.w,
                       child: Center(
@@ -523,7 +514,7 @@ class _ChassiState extends State<Chassi> {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       // color: Colors.deepOrange,
                       width: 100.w,
                       child: Center(
@@ -538,7 +529,7 @@ class _ChassiState extends State<Chassi> {
                 ),
               ),
               Expanded(
-                child: Container(
+                child: SizedBox(
                   // color: Colors.amberAccent,
                   width: 150.w,
                   child: Stack(
@@ -569,13 +560,10 @@ class _ChassiState extends State<Chassi> {
                                   )),
                           Expanded(
                               flex: 2,
-                              child: Container(
-                                // color: Colors.brown,
-                                child: NumberDot(
-                                    active: rearRight,
-                                    number: rearRightValue,
-                                    onTap: apertouRearRight),
-                              ))
+                              child: NumberDot(
+                                  active: rearRight,
+                                  number: rearRightValue,
+                                  onTap: apertouRearRight))
                         ],
                       ),
                     ],
@@ -583,7 +571,7 @@ class _ChassiState extends State<Chassi> {
                 ),
               ),
               Expanded(
-                child: Container(
+                child: SizedBox(
                   // color: Colors.blue,
                   width: 100.w,
                   child: Center(

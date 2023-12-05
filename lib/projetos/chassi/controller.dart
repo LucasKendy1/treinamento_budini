@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:treinamento/projetos/chassi/chassi.dart';
 
 class ChassisController extends StatefulWidget {
   const ChassisController({super.key});

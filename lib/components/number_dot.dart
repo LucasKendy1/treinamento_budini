@@ -39,6 +39,5 @@ class NumberDot extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

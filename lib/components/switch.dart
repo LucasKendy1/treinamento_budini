@@ -20,10 +20,10 @@ class _CustomSwitchState extends State<SwitchBudini> {
       },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),
-        width: 55, // Largura total do switch
-        height: 30, // Altura total do switch
+        width: 55.w, // Largura total do switch
+        height: 30.h, // Altura total do switch
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14.sp),
+          borderRadius: BorderRadius.circular(ScreenUtil().setWidth(20)),
           color: widget.value
               ? Color(0xff27F3ED)
               : Color(0x47000000), // Cor de fundo do switch
@@ -34,8 +34,8 @@ class _CustomSwitchState extends State<SwitchBudini> {
           children: [
             AnimatedContainer(
               duration: Duration(milliseconds: 300),
-              width: 26, // Largura do polegar (thumb)
-              height: 26, // Altura do polegar (thumb)
+              width: 26.w, // Largura do polegar (thumb)
+              height: 26.h, // Altura do polegar (thumb)
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,

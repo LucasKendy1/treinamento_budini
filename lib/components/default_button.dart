@@ -21,12 +21,14 @@ class FullButtonPadrao extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
               border: Border.all(width: 2, color: Color(0xff27F3ED)),
               color: Color(0xff27F3ED)),
-          child: Titulo(
-            weight: FontWeight.w600,
-            tamanho: 16,
-            text: text,
-            cor: Color(0xff2D3442),
-            txtalg: TextAlign.center,
+          child: Center(
+            child: Titulo(
+              weight: FontWeight.w600,
+              tamanho: 16,
+              text: text,
+              cor: Color(0xff2D3442),
+              txtalg: TextAlign.center,
+            ),
           ),
         ),
       ),

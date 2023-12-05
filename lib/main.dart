@@ -9,6 +9,7 @@ import 'package:treinamento/projetos/estoque/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:treinamento/projetos/estoque/finalizar.dart';
 import 'package:treinamento/pages/menu.dart';
+import 'package:treinamento/projetos/inspection/inspection.dart';
 
 Database? banco;
 
@@ -29,13 +30,14 @@ class MyApp extends StatelessWidget {
       // home: HomePage(
       //   banco: banco!,
       // ),
-      home: Chassi(),
+      home: Inspection(),
       debugShowCheckedModeBanner: false,
       routes: {
         '/menu': (context) => Menu(),
         '/home': (context) => HomePage(banco: banco!),
         '/finalizar': (context) => Finalizar(),
         '/chassi': (context) => Chassi(),
+        '/inspection': (context) => Inspection(),
       },
     );
   }
