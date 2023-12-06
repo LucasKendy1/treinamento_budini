@@ -12,10 +12,14 @@ import 'package:treinamento/pages/menu.dart';
 import 'package:treinamento/projetos/inspection/inspection.dart';
 
 Database? banco;
+ValueNotifier<bool> atualizaNp = ValueNotifier(false);
+// ValueNotifier<bool> atualizaPps = ValueNotifier(false);
+// ValueNotifier<bool> atualizaTpp = ValueNotifier(false);
 
 Future<void> main() async {
   DatabaseHelper databaseHelper = DatabaseHelper();
   banco = await databaseHelper.createTable();
+
   runApp(
     MyApp(),
   );

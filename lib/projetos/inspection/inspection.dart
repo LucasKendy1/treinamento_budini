@@ -1,7 +1,8 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:treinamento/components/default_button.dart';
 import 'package:treinamento/components/fonte_padrao.dart';
 import 'package:treinamento/components/fronte_categorizacao.dart';
@@ -9,6 +10,9 @@ import 'package:treinamento/components/header.dart';
 import 'package:treinamento/components/switch.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:treinamento/main.dart';
+import 'package:treinamento/projetos/inspection/number_picker.dart';
+import 'package:treinamento/projetos/inspection/number_picker_v2.dart';
 
 class Inspection extends StatefulWidget {
   const Inspection({super.key});
@@ -24,11 +28,16 @@ class _InspectionState extends State<Inspection> {
   List<String> points = ['1', '2'];
   List<String> threads = ['1', '2', '3', '4', '5', '6', '7', '8', 'auto'];
 
-  String selectedSection = '8';
-  String selectedPoint = '2';
-  String selectedThread = '5';
+  late String selectedSection;
+  late String selectedPoint;
+  late String selectedThread;
+
+  late NumberPicker2 npSections;
+  late NumberPicker2 npPoint;
+  late NumberPicker2 npThread;
 
   switchSvg() {
+    selectedSection = npSections.selected;
     switch (selectedSection) {
       case '1':
         return SvgPicture.asset(
@@ -87,21 +96,39 @@ class _InspectionState extends State<Inspection> {
   }
 
   Widget traceRender() {
-    int selectedThreadCount = int.parse(selectedThread);
+    selectedThread = npThread.selected;
+    if (selectedThread != "auto") {
+      int selectedThreadCount = int.parse(selectedThread);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        selectedThreadCount,
-        (index) => Text(
-          "\'",
-          style: TextStyle(
-              color: Color(0xff000000),
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w900),
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(
+          selectedThreadCount,
+          (index) => Text(
+            "\'",
+            style: TextStyle(
+                color: Color(0xff000000),
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w900,
+                fontFamily: GoogleFonts.poppins().fontFamily),
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  @override
+  initState() {
+    npSections = NumberPicker2(numberList: sections, title: "Sections");
+    npPoint = NumberPicker2(numberList: points, title: "Points per section");
+    npThread = NumberPicker2(numberList: threads, title: "Threads per point");
+
+    selectedSection = npSections.selected;
+    selectedPoint = npPoint.selected;
+    selectedThread = npThread.selected;
+    super.initState();
   }
 
   @override
@@ -180,31 +207,13 @@ class _InspectionState extends State<Inspection> {
                   children: [
                     Expanded(
                         flex: 6,
-                        child: Container(
-                          // color: Colors.blue,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Expanded(
-                                child: NumberPicker(
-                                  numberList: sections,
-                                  title: "Sections",
-                                ),
-                              ),
-                              Expanded(
-                                child: NumberPicker(
-                                  numberList: points,
-                                  title: "Points per section",
-                                ),
-                              ),
-                              Expanded(
-                                child: NumberPicker(
-                                  numberList: threads,
-                                  title: "Threads per point",
-                                ),
-                              ),
-                            ],
-                          ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(child: npSections),
+                            Expanded(child: npPoint),
+                            Expanded(child: npThread),
+                          ],
                         )),
                     Expanded(
                         flex: 3,
@@ -216,111 +225,130 @@ class _InspectionState extends State<Inspection> {
                               children: [
                                 Expanded(
                                     flex: 2,
-                                    child: Container(
-                                      // color: Colors.amber,
-                                      child: switchSvg(),
-                                    )),
+                                    child: ValueListenableBuilder(
+                                        valueListenable: atualizaNp,
+                                        builder: (context, snapshot, _) {
+                                          return Container(
+                                            child: switchSvg(),
+                                          );
+                                        })),
                                 Expanded(
                                     flex: 2,
                                     child: Row(
-                                      // mainAxisAlignment: MainAxisAlignment.center,
-                                      // crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Expanded(
                                           flex: 3,
-                                          child: Container(
-                                            // color: Colors.blue,
-                                            child: Stack(children: [
-                                              SvgPicture.asset(
-                                                'assets/svgs/tire_for_points_sections.svg',
-                                                width: 90,
-                                                height: 90,
-                                              ),
-                                              Padding(
-                                                padding: selectedPoint == '2'
-                                                    ? EdgeInsets.only(
-                                                        left: ScreenUtil()
-                                                            .setWidth(10),
-                                                        right: ScreenUtil()
-                                                            .setWidth(6),
-                                                        top: ScreenUtil()
-                                                            .setHeight(20),
-                                                      )
-                                                    : EdgeInsets.only(
-                                                        left: ScreenUtil()
-                                                            .setWidth(13),
-                                                        right: ScreenUtil()
-                                                            .setWidth(6),
-                                                        top: ScreenUtil()
-                                                            .setHeight(26),
-                                                      ),
-                                                child: Column(
-                                                  children: [
-                                                    selectedThread == 'auto'
-                                                        ? Container()
-                                                        : traceRender(),
-                                                    selectedPoint == '2'
-                                                        ? Padding(
-                                                            padding:
-                                                                const EdgeInsets
+                                          child: ValueListenableBuilder(
+                                              valueListenable: atualizaNp,
+                                              builder: (context, snapshot, _) {
+                                                selectedPoint =
+                                                    npPoint.selected;
+                                                return Container(
+                                                  // color: Colors.blue,
+                                                  child: Stack(children: [
+                                                    SvgPicture.asset(
+                                                      'assets/svgs/tire_for_points_sections.svg',
+                                                      width: 90,
+                                                      height: 90,
+                                                    ),
+                                                    Padding(
+                                                        padding:
+                                                            selectedPoint == '2'
+                                                                ? EdgeInsets
                                                                     .only(
-                                                                    left: 15),
-                                                            child: selectedThread ==
-                                                                    'auto'
-                                                                ? Container()
-                                                                : traceRender(),
-                                                          )
-                                                        : Container(),
-                                                  ],
-                                                ),
-                                              ),
-                                            ]),
-                                          ),
+                                                                    left: ScreenUtil()
+                                                                        .setWidth(
+                                                                            10),
+                                                                    right: ScreenUtil()
+                                                                        .setWidth(
+                                                                            6),
+                                                                    top: ScreenUtil()
+                                                                        .setHeight(
+                                                                            20),
+                                                                  )
+                                                                : EdgeInsets
+                                                                    .only(
+                                                                    left: ScreenUtil()
+                                                                        .setWidth(
+                                                                            13),
+                                                                    right: ScreenUtil()
+                                                                        .setWidth(
+                                                                            6),
+                                                                    top: ScreenUtil()
+                                                                        .setHeight(
+                                                                            26),
+                                                                  ),
+                                                        child: Column(
+                                                          children: [
+                                                            traceRender(),
+                                                            selectedPoint == '2'
+                                                                ? Padding(
+                                                                    padding: const EdgeInsets
+                                                                        .only(
+                                                                        left:
+                                                                            15),
+                                                                    child:
+                                                                        traceRender(),
+                                                                  )
+                                                                : Container(),
+                                                          ],
+                                                        )),
+                                                  ]),
+                                                );
+                                              }),
                                         ),
-                                        Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              // color: Colors.amber,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
+                                        ValueListenableBuilder(
+                                            valueListenable: atualizaNp,
+                                            builder: (context, snapshot, _) {
+                                              selectedPoint = npPoint.selected;
+                                              return Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                    // color: Colors.amber,
                                                     child: Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
                                                               .center,
                                                       children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  right: 15),
-                                                          child: Text('1',
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      13.sp,
-                                                                  color: Colors
-                                                                      .white)),
+                                                        Container(
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        right:
+                                                                            15),
+                                                                child: Text('1',
+                                                                    style: TextStyle(
+                                                                        fontSize: 13
+                                                                            .sp,
+                                                                        color: Colors
+                                                                            .white)),
+                                                              ),
+                                                              selectedPoint ==
+                                                                      '2'
+                                                                  ? Text('2',
+                                                                      style: TextStyle(
+                                                                          fontSize: 13
+                                                                              .sp,
+                                                                          color:
+                                                                              Colors.white))
+                                                                  : Container(),
+                                                            ],
+                                                          ),
                                                         ),
-                                                        selectedPoint == '2'
-                                                            ? Text('2',
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        13.sp,
-                                                                    color: Colors
-                                                                        .white))
-                                                            : Container(),
+                                                        Container(
+                                                          height: 15.h,
+                                                          // color: Colors.amberAccent,
+                                                        )
                                                       ],
                                                     ),
-                                                  ),
-                                                  Container(
-                                                    height: 15.h,
-                                                    // color: Colors.amberAccent,
-                                                  )
-                                                ],
-                                              ),
-                                            )),
+                                                  ));
+                                            }),
                                       ],
                                     )),
                                 Expanded(flex: 1, child: Container())
@@ -377,7 +405,11 @@ class _InspectionState extends State<Inspection> {
             //customButtom
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 15, bottom: 8),
-              child: FullButtonPadrao(onTap: () {}, text: "Start"),
+              child: FullButtonPadrao(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/menu');
+                  },
+                  text: "Start"),
             ),
           ],
         ),
@@ -385,98 +417,3 @@ class _InspectionState extends State<Inspection> {
     ));
   }
 }
-
-class NumberPicker extends StatefulWidget {
-  final String title;
-  final List<String> numberList;
-
-  NumberPicker({required this.numberList, required this.title});
-
-  @override
-  _NumberPickerState createState() => _NumberPickerState();
-}
-
-class _NumberPickerState extends State<NumberPicker> {
-  final ScrollController _scrollController =
-      ScrollController(initialScrollOffset: 500000.0);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        if (widget.title == "Points per section") Expanded(child: SizedBox()),
-        Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            itemCount: widget.numberList.length,
-            itemBuilder: (context, index) {
-              final itemIndex = index % widget.numberList.length;
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8, bottom: 8),
-                  child: Container(
-                    width: 40.w,
-                    height: 30.h,
-                    // color: Colors.black26,
-                    child: Expanded(
-                      child: Center(
-                        child: Text(
-                          widget.numberList[itemIndex],
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.sp,
-                              fontFamily: GoogleFonts.poppins().fontFamily),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        if (widget.title == "Points per section") Expanded(child: SizedBox()),
-      ],
-    );
-  }
-}
-
-
-// Column(
-//       children: [
-//         ListView.builder(
-//           itemCount: widget.numberList.length,
-//           itemBuilder: (context, index) {
-//             return GestureDetector(
-//               onTap: () {
-//                 setState(() {
-//                   selectedIndex = index;
-//                 });
-//               },
-//               child: Container(
-//                 padding: EdgeInsets.all(16.0),
-//                 color:
-//                     index == selectedIndex ? Colors.blue : Colors.transparent,
-//                 child: Text(
-//                   widget.numberList[index],
-//                   style: TextStyle(
-//                     fontSize: 18.0,
-//                     color: index == selectedIndex ? Colors.white : Colors.black,
-//                   ),
-//                 ),
-//               ),
-//             );
-//           },
-//         ),
-//         Container(
-//           padding: EdgeInsets.all(16.0),
-//           color: Colors.grey[300],
-//           child: Text(
-//             'Selected: ${widget.numberList[selectedIndex]}',
-//             style: TextStyle(fontSize: 18.0),
-//           ),
-//         ),
-//       ],
-//     );
