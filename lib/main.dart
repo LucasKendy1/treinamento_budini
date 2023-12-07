@@ -10,11 +10,12 @@ import 'package:provider/provider.dart';
 import 'package:treinamento/projetos/estoque/finalizar.dart';
 import 'package:treinamento/pages/menu.dart';
 import 'package:treinamento/projetos/inspection/inspection.dart';
+import 'package:treinamento/projetos/request_json/request_json.dart';
+import 'package:treinamento/projetos/request_xml/request_xml.dart';
 
 Database? banco;
 ValueNotifier<bool> atualizaNp = ValueNotifier(false);
-// ValueNotifier<bool> atualizaPps = ValueNotifier(false);
-// ValueNotifier<bool> atualizaTpp = ValueNotifier(false);
+ValueNotifier<bool> atualizaTire = ValueNotifier(false);
 
 Future<void> main() async {
   DatabaseHelper databaseHelper = DatabaseHelper();
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
       // home: HomePage(
       //   banco: banco!,
       // ),
-      home: Inspection(),
+      home: JSONRequest(),
       debugShowCheckedModeBanner: false,
       routes: {
         '/menu': (context) => Menu(),
@@ -42,6 +43,8 @@ class MyApp extends StatelessWidget {
         '/finalizar': (context) => Finalizar(),
         '/chassi': (context) => Chassi(),
         '/inspection': (context) => Inspection(),
+        '/xml': (context) => XmlRequest(),
+        '/json': (context) => JSONRequest(),
       },
     );
   }

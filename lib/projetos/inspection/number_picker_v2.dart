@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:treinamento/main.dart';
@@ -11,7 +12,11 @@ class NumberPicker2 extends StatefulWidget {
 
   late ValueNotifier<int> selectedIndexNotifier;
   String selected = '2';
-  int index = 0;
+  late int indexOriginal;
+  late double x;
+  late double y;
+  late double z;
+  late double middle;
 
   @override
   _NumberPickerState createState() => _NumberPickerState();
@@ -24,7 +29,7 @@ class _NumberPickerState extends State<NumberPicker2> {
   void initState() {
     super.initState();
     _scrollController = ScrollController(
-      initialScrollOffset: 1000 * 30.0, // Ajuste conforme necessário
+      initialScrollOffset: 300 * 2, // Ajuste conforme necessário
     );
 
     widget.selectedIndexNotifier =
@@ -32,11 +37,27 @@ class _NumberPickerState extends State<NumberPicker2> {
   }
 
   void scrollToMiddle() {
-    double offset = widget.selectedIndexNotifier.value * 35;
-    print("valor do index global: $widget.index");
-    print(
-        'valor do selectIndexNotifier : ${widget.selectedIndexNotifier.value}');
-    _scrollController.jumpTo(offset);
+    print("ajustando z para o meio");
+
+    double offset;
+    double gap;
+
+    gap = (widget.middle - widget.z).abs();
+    print("gap($gap) = z(${widget.z}) - middle(${widget.middle})");
+
+    if (widget.z > widget.middle) {
+      offset = widget.z - gap;
+    } else {
+      offset = widget.z + gap;
+    }
+
+    _scrollController.animateTo(
+      offset,
+      duration: Duration(milliseconds: 700),
+      curve: Curves.easeInOut,
+    );
+
+    // _scrollController.jumpTo(offset);
   }
 
   int getRealIndex(int adjustedIndex) {
@@ -44,47 +65,72 @@ class _NumberPickerState extends State<NumberPicker2> {
     return adjustedIndex % widget.numberList.length;
   }
 
+  void updateVisibleItemsPositions() {
+    if (_scrollController.hasClients) {
+      setState(() {
+        widget.x = _scrollController.position.pixels;
+        widget.y = (_scrollController.position.pixels + 165);
+      });
+    }
+    widget.middle = (widget.x + widget.y) / 2;
+    print("Valor de x: ${widget.x}");
+    print("Valor do meio: ${widget.middle}");
+    print("Valor de y: ${widget.y}");
+  }
+
+  void updateMainHeight() {
+    setState(() {
+      // Ajuste conforme necessário, considerando a altura real do item
+      widget.z = widget.indexOriginal * 33;
+    });
+    print("Valor de z: ${widget.z}");
+  }
+
   Widget renderizaLista() {
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollUpdateNotification) {
-          // Faça algo quando a lista estiver rolando
-          // Por exemplo, você pode acessar scrollNotification.metrics para obter informações sobre a rolagem
-          int adjustedIndex = widget.index % widget.numberList.length;
-          int realIndex = getRealIndex(adjustedIndex);
-          print("Índice real na lista original: $realIndex");
-          widget.selected = widget.numberList[realIndex];
-          atualizaNp.value = !atualizaNp.value;
+          updateVisibleItemsPositions();
+          int middleIndex = (_scrollController.position.pixels +
+                  _scrollController.position.viewportDimension / 2) ~/
+              33;
+
+          setState(() {
+            widget.selectedIndexNotifier.value =
+                middleIndex % widget.numberList.length;
+            widget.selected = widget.numberList[getRealIndex(middleIndex)];
+            atualizaNp.value = !atualizaNp.value;
+          });
         }
         return false;
       },
       child: ListView.builder(
         controller: _scrollController,
         scrollDirection: Axis.vertical,
-        // itemCount: widget.numberList.length,
         itemBuilder: (context, index) {
+          widget.indexOriginal = index;
           int adjustedIndex = index % widget.numberList.length;
           String item = widget.numberList[adjustedIndex];
-          widget.index = adjustedIndex;
 
           return GestureDetector(
             onTap: () {
               setState(() {
                 widget.selectedIndexNotifier.value = adjustedIndex;
                 widget.selected = item;
-                print(widget.selected);
                 atualizaNp.value = !atualizaNp.value;
               });
+              updateMainHeight();
               scrollToMiddle();
 
-              // Obtém o índice real na lista original
               int realIndex = getRealIndex(adjustedIndex);
+              print("Clicou no ${widget.numberList[realIndex]}");
               print("Índice real na lista original: $realIndex");
+              print("Indice original: ${widget.indexOriginal}");
             },
             child: Container(
               width: 50.w,
               height: 33.h,
-              // color: Colors.black38,
+              // color: Colors.amberAccent,
               child: Center(
                 child: Text(
                   item,
@@ -107,7 +153,6 @@ class _NumberPickerState extends State<NumberPicker2> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // color: Colors.black12
       height: 165.h,
       child: Stack(
         alignment: Alignment.center,
@@ -126,17 +171,17 @@ class _NumberPickerState extends State<NumberPicker2> {
                 Expanded(flex: 1, child: SizedBox()),
             ],
           ),
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: Color(0x3DFFFFFF),
-              ),
-              width: 50.w,
-              height: 30.h,
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.center,
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.circular(5),
+          //       color: Color(0x3DFFFFFF),
+          //     ),
+          //     width: 50.w,
+          //     height: 30.h,
+          //   ),
+          // ),
         ],
       ),
     );

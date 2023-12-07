@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:treinamento/components/custom_button.dart';
 
 class Menu extends StatelessWidget {
@@ -22,7 +23,7 @@ class Menu extends StatelessWidget {
                   Navigator.pushNamed(context, "/home");
                 }),
             SizedBox(
-              height: 10,
+              height: 10.h,
             ),
             Button(
                 text: "Chassi",
@@ -30,12 +31,28 @@ class Menu extends StatelessWidget {
                   Navigator.pushNamed(context, "/chassi");
                 }),
             SizedBox(
-              height: 10,
+              height: 10.h,
             ),
             Button(
                 text: "Inspection P&D",
                 onPressed: () {
                   Navigator.pushNamed(context, "/inspection");
+                }),
+            SizedBox(
+              height: 10.h,
+            ),
+            Button(
+                text: "XML Request",
+                onPressed: () {
+                  Navigator.pushNamed(context, "/xml");
+                }),
+            SizedBox(
+              height: 10.h,
+            ),
+            Button(
+                text: "JSON Request",
+                onPressed: () {
+                  Navigator.pushNamed(context, "/json");
                 }),
           ],
         ),

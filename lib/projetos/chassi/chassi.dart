@@ -309,7 +309,7 @@ class _ChassiState extends State<Chassi> {
                             text: "Change inspection sequence",
                             cor: Colors.white),
                         Padding(
-                          padding: const EdgeInsets.only(right: 14),
+                          padding: const EdgeInsets.only(right: 0),
                           child: SwitchBudini(
                               value: switchState,
                               onChanged: (value) {

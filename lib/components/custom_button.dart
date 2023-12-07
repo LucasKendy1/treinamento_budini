@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Button extends StatelessWidget {
@@ -12,13 +13,13 @@ class Button extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        height: 48,
+        height: 48.h,
         decoration: BoxDecoration(
           border: Border.all(
             color: Color(0xFF2D3442),
             width: 2.0, // Ajuste a largura da borda conforme necessário
           ),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(24.sp),
         ),
         child: Center(
           child: Text(
