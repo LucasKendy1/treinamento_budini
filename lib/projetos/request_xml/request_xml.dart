@@ -17,14 +17,13 @@ class XmlRequest extends StatefulWidget {
 class _XmlRequestState extends State<XmlRequest> {
   var data;
   int selectedTire = 1;
-
+  var tiresQuantity = 1;
   Future<Map<String, dynamic>> fetchData() async {
     var url =
-        'https://testbudini.fleetsurvey.com/survey/wsrest.php/VehicleForInspection/serial/AA99999997/fleet-branch/PSUITE-XXX/vehicle/100008';
+        'https://testbudini.fleetsurvey.com/survey/wsrest.php/VehicleForInspection/serial/AA99999997/fleet-branch/PSUITE-XXX/vehicle/estepe1';
     var response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-
       var xmlData = response.body;
       final Xml2Json xml2json = Xml2Json();
       xml2json.parse(xmlData);
@@ -32,10 +31,24 @@ class _XmlRequestState extends State<XmlRequest> {
       var jsonData = xml2json.toParkerWithAttrs();
       data = json.decode(jsonData);
       return data;
-      
     } else {
       throw Exception(
-      'Falha na requisição com status code: ${response.statusCode}');
+          'Falha na requisição com status code: ${response.statusCode}');
+    }
+  }
+
+  updateTireQuantity() {
+    if (data != null &&
+        data['DADOSPARAINSPECAO'] != null &&
+        data['DADOSPARAINSPECAO']['VEICULO'] != null &&
+        data['DADOSPARAINSPECAO']['VEICULO']['PNEU'] != null) {
+      List<Map<dynamic, dynamic>> pneu = List<Map<dynamic, dynamic>>.from(
+          data['DADOSPARAINSPECAO']['VEICULO']['PNEU']);
+
+      tiresQuantity = pneu.length;
+      print(tiresQuantity);
+    } else {
+      print('Estrutura de dados inválida');
     }
   }
 
@@ -62,6 +75,9 @@ class _XmlRequestState extends State<XmlRequest> {
                         )));
                       } else {
                         var data = snapshot.data!;
+                        // tiresQuantity = data['DADOSPARAINSPECAO']['VEICULO']
+                        //         ['PNEU']['value'];
+                        updateTireQuantity();
                         return Padding(
                           padding: const EdgeInsets.all(16),
                           child: Container(
@@ -160,7 +176,7 @@ class _XmlRequestState extends State<XmlRequest> {
                                                 dropdownColor: Colors.black26,
                                                 value: selectedTire,
                                                 items: List.generate(
-                                                  10,
+                                                  tiresQuantity, //qtd de pneus
                                                   (index) => DropdownMenuItem(
                                                     value: index + 1,
                                                     child: Container(

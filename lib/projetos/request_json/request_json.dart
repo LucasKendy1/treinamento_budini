@@ -17,6 +17,7 @@ class JSONRequest extends StatefulWidget {
 class _JSONRequestState extends State<JSONRequest> {
   var data;
   int selectedTire = 1;
+  var tiresQuantity = 1;
 
   fetchData() async {
     var url =
@@ -29,7 +30,7 @@ class _JSONRequestState extends State<JSONRequest> {
         "WSType": 1,
         "FleetCode": "PDR12",
         "BranchCode": "XXX",
-        "VehicleCode": "LLDR1521"
+        "VehicleCode": "LLDR1521X"
       }
     };
 
@@ -50,6 +51,13 @@ class _JSONRequestState extends State<JSONRequest> {
     } else {
       print('Falha na requisição com status code: ${response.statusCode}');
     }
+  }
+
+  updateTireQuantity() {
+    List<Map<dynamic, dynamic>> pneu = List<Map<dynamic, dynamic>>.from(
+        data['DADOSPARAINSPECAO']['VEICULO']['PNEU']);
+    tiresQuantity = pneu.length;
+    // print(tiresQuantity);
   }
 
   @override
@@ -74,7 +82,8 @@ class _JSONRequestState extends State<JSONRequest> {
                           color: Colors.white,
                         )));
                       } else {
-                        var data = snapshot.data! as Map;
+                        data = snapshot.data!;
+                        updateTireQuantity();
                         return Padding(
                           padding: const EdgeInsets.all(16),
                           child: Container(
@@ -173,7 +182,7 @@ class _JSONRequestState extends State<JSONRequest> {
                                                 dropdownColor: Colors.black26,
                                                 value: selectedTire,
                                                 items: List.generate(
-                                                  9,
+                                                  tiresQuantity,
                                                   (index) => DropdownMenuItem(
                                                     value: index + 1,
                                                     child: Container(
